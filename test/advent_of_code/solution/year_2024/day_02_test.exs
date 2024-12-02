@@ -5,8 +5,7 @@ defmodule AdventOfCode.Solution.Year2024.Day02Test do
 
   setup do
     [
-      input: """
-      """
+      input: "../../../../inputs/2024/day02.txt"
     ]
   end
 
