@@ -2,12 +2,17 @@ defmodule AdventOfCode.Solution.Year2024.Day01 do
   def part1(input) do
     {left_list, right_list} = process_input(input)
 
-    left_list_sorted = Enum.sort(left_list)  # Sort the left list
-    right_list_sorted = Enum.sort(right_list)  # Sort the right list
+    # Sort the left list
+    left_list_sorted = Enum.sort(left_list)
+    # Sort the right list
+    right_list_sorted = Enum.sort(right_list)
 
-    Enum.zip(left_list_sorted, right_list_sorted)  # Zip the two lists together
-    |> Enum.map(fn {l, r} -> abs(r - l) end)  # Calculate the difference for each pair
-    |> Enum.sum()  # Sum all the differences
+    # Zip the two lists together
+    Enum.zip(left_list_sorted, right_list_sorted)
+    # Calculate the difference for each pair
+    |> Enum.map(fn {l, r} -> abs(r - l) end)
+    # Sum all the differences
+    |> Enum.sum()
   end
 
   def part2(input) do
@@ -16,17 +21,20 @@ defmodule AdventOfCode.Solution.Year2024.Day01 do
     right_frequencies = Enum.frequencies(right_list)
 
     left_list
-      |> Enum.map(fn n -> n * Map.get(right_frequencies, n, 0) end)
-      |> Enum.sum()  # Sum all the differences
+    |> Enum.map(fn n -> n * Map.get(right_frequencies, n, 0) end)
+    # Sum all the differences
+    |> Enum.sum()
   end
 
   defp process_input(input) do
     {left_list, right_list} =
       input
-      |> String.split("\n", trim: true)  # Split the input string into lines, trimming whitespace
+      # Split the input string into lines, trimming whitespace
+      |> String.split("\n", trim: true)
       |> Enum.reduce({[], []}, fn line, {left_acc, right_acc} ->
-        [left, right] = String.split(String.trim(line))  # Split each line into left and right
-        { [String.to_integer(left) | left_acc], [String.to_integer(right) | right_acc] }
+        # Split each line into left and right
+        [left, right] = String.split(String.trim(line))
+        {[String.to_integer(left) | left_acc], [String.to_integer(right) | right_acc]}
       end)
 
     {left_list, right_list}
