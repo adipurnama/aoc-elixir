@@ -1,76 +1,45 @@
 defmodule AdventOfCode.Solution.Year2024.Day07 do
   def part1(input) do
-    solve(input, ["+", "*"])
+    solve(input, [&Kernel.+/2, &Kernel.*/2])
   end
 
   def part2(input) do
-    solve(input, ["+", "*", "||"])
+    solve(input, [&Kernel.+/2, &Kernel.*/2, &concat/2])
   end
 
   defp solve(input, operators) do
+    parse_input(input)
+    |> Task.async_stream(fn {result, nums} ->
+      {result, valid?({result, nums}, operators)}
+    end)
+    |> Enum.reduce(0, fn {:ok, {result, correct}}, acc ->
+      if correct, do: acc + result, else: acc
+    end)
+  end
+
+  defp parse_input(input) do
     input
     |> String.split("\n", trim: true)
-    |> Enum.map(fn line ->
-      equation =
-        line
-        |> String.split(":", trim: false)
-
-      result = Enum.at(equation, 0) |> String.to_integer()
-
-      calibration =
-        Enum.at(equation, 1)
-        |> String.split(" ", trim: true)
-        |> Enum.map(&String.to_integer/1)
-        |> generate_pairs(operators)
-        |> Enum.find(fn cal ->
-          correct_calibration?(result, cal)
-        end)
-
-      {result, calibration}
-    end)
-    |> Enum.filter(fn {_result, calibration} ->
-      calibration != nil
-    end)
-    |> Enum.reduce(0, fn {result, _}, acc -> acc + result end)
+    |> Stream.map(&parse_line/1)
   end
 
-  defp correct_calibration?(result, cal) do
-    cal_result =
-      cal
-      |> Enum.reduce_while(0, fn {n, opr}, acc ->
-        cond do
-          acc > result ->
-            {:halt, acc}
+  defp parse_line(line) do
+    [result, nums] = String.split(line, ":")
 
-          acc == 0 ->
-            {:cont, n}
+    nums =
+      nums
+      |> String.split(" ", trim: true)
+      |> Enum.map(&String.to_integer/1)
 
-          true ->
-            {:cont, apply_opr(opr, acc, n)}
-        end
-      end)
-
-    cal_result == result
+    {result |> String.to_integer(), nums}
   end
 
-  defp apply_opr(opr, n1, n2) do
-    case opr do
-      "+" ->
-        n1 + n2
+  defp valid?({total, [num]}, _), do: total == num
 
-      "*" ->
-        n1 * n2
-
-      "||" ->
-        "#{n1}#{n2}" |> String.to_integer()
-    end
+  defp valid?({total, [num1, num2 | list]}, operators) do
+    Enum.any?(operators, fn op -> valid?({total, [op.(num1, num2) | list]}, operators) end)
   end
 
-  defp generate_pairs([], _), do: [[]]
-
-  defp generate_pairs([h | t], list2) do
-    for elem <- list2, tail <- generate_pairs(t, list2) do
-      [{h, elem} | tail]
-    end
-  end
+  # Alternative implementation for String.to_integer("#{one}#{two}") that is so much faster!
+  def concat(one, two), do: one * 10 ** length(Integer.digits(two)) + two
 end
