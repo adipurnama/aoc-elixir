@@ -1,16 +1,5 @@
 defmodule AdventOfCode.Solution.Year2024.Day10 do
   def part1(input) do
-    # input = """
-    # 89010123
-    # 78121874
-    # 87430965
-    # 96549874
-    # 45678903
-    # 32019012
-    # 01329801
-    # 10456732
-    # """
-
     grid =
       parse(input)
 
@@ -26,63 +15,42 @@ defmodule AdventOfCode.Solution.Year2024.Day10 do
     |> List.flatten()
     |> Enum.frequencies()
     |> Enum.reduce(0, fn {_pos, n}, acc -> acc + n end)
-
-    # {zeros, nines} =
-    #   grid
-    #   |> Enum.reduce({[], []}, fn {pos, n}, {zero_pos, nine_pos} ->
-    #     case n do
-    #       9 -> {zero_pos, [pos | nine_pos]}
-    #       0 -> {[pos | zero_pos], nine_pos}
-    #       _ -> {zero_pos, nine_pos}
-    #     end
-    #   end)
   end
 
-  def traverse(grid, pos = {x, y}, paths, peaks) do
-    if Enum.member?(paths, pos) do
-      []
-    else
-      n = Map.get(grid, pos)
+  def part2(input) do
+    grid =
+      parse(input)
 
-      case n do
-        9 ->
-          [pos]
-
-        nil ->
-          []
-
-        d ->
-          up = Map.get(grid, {x, y - 1})
-          down = Map.get(grid, {x, y + 1})
-          left = Map.get(grid, {x - 1, y})
-          right = Map.get(grid, {x + 1, y})
-
-          check_up =
-            if Enum.member?([0, nil], up) == false and abs(d - up) == 1,
-              do: traverse(grid, {x, y - 1}, [pos | paths], peaks),
-              else: []
-
-          check_down =
-            if Enum.member?([0, nil], down) == false and abs(d - down) == 1,
-              do: traverse(grid, {x, y + 1}, [pos | paths], peaks),
-              else: []
-
-          check_left =
-            if Enum.member?([0, nil], left) == false and abs(d - left) == 1,
-              do: traverse(grid, {x - 1, y}, [pos | paths], peaks),
-              else: []
-
-          check_right =
-            if Enum.member?([0, nil], right) == false and abs(d - right) == 1,
-              do: traverse(grid, {x + 1, y}, [pos | paths], peaks),
-              else: []
-
-          [check_up, check_down, check_left, check_right]
+    grid
+    |> Enum.reduce([], fn {pos, n}, acc ->
+      if n == 0 do
+        res = traverse(grid, pos, [], []) |> List.flatten()
+        [res | acc]
+      else
+        acc
       end
-    end
+    end)
+    |> List.flatten()
+    |> Enum.count()
   end
 
-  def part2(_input) do
+  defp traverse(grid, pos = {x, y}, paths, peaks) do
+    n = Map.get(grid, pos)
+
+    case n do
+      9 ->
+        [pos]
+
+      nil ->
+        []
+
+      d ->
+        [{x, y - 1}, {x, y + 1}, {x - 1, y}, {x + 1, y}]
+        |> Enum.filter(fn new_pos ->
+          Map.get(grid, new_pos) == d + 1 and Enum.member?(grid, new_pos) == false
+        end)
+        |> Enum.map(fn new_pos -> traverse(grid, new_pos, [new_pos | paths], peaks) end)
+    end
   end
 
   defp parse(input) do
