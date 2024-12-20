@@ -6,15 +6,30 @@ defmodule AdventOfCode.Solution.Year2024.Day16Test do
   setup do
     [
       input: """
+      ###############
+      #.......#....E#
+      #.#.###.#.###.#
+      #.....#.#...#.#
+      #.###.#####.#.#
+      #.#.#.......#.#
+      #.#.#####.###.#
+      #...........#.#
+      ###.#.#####.#.#
+      #...#.....#.#.#
+      #.#.#.###.#.#.#
+      #.....#...#.#.#
+      #.###.#.#.#.#.#
+      #S..#.....#...#
+      ###############
       """
     ]
   end
 
-  @tag :skip
+  # @tag :skip
   test "part1", %{input: input} do
     result = part1(input)
 
-    assert result
+    assert result == 7036
   end
 
   @tag :skip
