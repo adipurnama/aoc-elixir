@@ -21,12 +21,12 @@ defmodule AdventOfCode.Solution.Year2024.Day16 do
   end
 
   defp find_lowest_scores(graph, from, to) do
-    queue = queue_next_states(PriorityQueue.new(), {from, :east, [{from, :east}], 0}, graph)
+    queue = queue_next_states(PriorityQueue.new(), graph, {{from, :east}, [{from, :east}], 0})
     do_search(PriorityQueue.pop(queue), graph, to, %{{from, :east} => {0, []}})
   end
 
-  defp queue_next_states(queue, {coord, facing, path, score}, graph) do
-    moves = next_moves(graph, {coord, facing})
+  defp queue_next_states(queue, graph, {pos_dir, path, score}) do
+    moves = next_moves(graph, pos_dir)
 
     moves
     |> Enum.reduce(queue, fn {coord, facing, added_score}, queue ->
@@ -69,7 +69,7 @@ defmodule AdventOfCode.Solution.Year2024.Day16 do
           # Either the first time we've seen this coordinate, or this is a better way
           # of getting to it (actions are the same)
           seen = Map.put(seen, {coord, facing}, {score, path})
-          queue = queue_next_states(queue, {coord, facing, path, score}, graph)
+          queue = queue_next_states(queue, graph, {{coord, facing}, path, score})
           do_search(PriorityQueue.pop(queue), graph, to, seen)
       end
     end
