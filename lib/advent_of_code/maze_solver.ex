@@ -94,17 +94,17 @@ defmodule AdventOfCode.MazeSolver do
   defp get_neighbors(maze, size, {x, y}, end_pos) do
     directions = [{0, 1}, {1, 0}, {0, -1}, {-1, 0}]
 
-    for {dx, dy} <- directions do
+    directions
+    |> Enum.reduce([], fn {dx, dy}, valid_moves ->
       nx = x + dx
       ny = y + dy
 
       if valid_move?(maze, size, {nx, ny}, end_pos) do
-        {nx, ny}
+        [{nx, ny} | valid_moves]
       else
-        nil
+        valid_moves
       end
-    end
-    |> Enum.reject(&is_nil/1)
+    end)
   end
 
   defp valid_move?(_maze, _size, {x, y}, {x, y}), do: true
