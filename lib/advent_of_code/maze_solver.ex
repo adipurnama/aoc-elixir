@@ -3,7 +3,7 @@ defmodule AdventOfCode.MazeSolver do
     {maze, size, start_pos, end_pos} =
       AdventOfCode.MapGrid.parse_grid(input, start_char, end_char)
 
-    bfs(maze, size, start_pos, end_pos)
+    shortest_path(maze, size, start_pos, end_pos)
   end
 
   def format_path(maze, {w, h}, path) do
@@ -58,7 +58,8 @@ defmodule AdventOfCode.MazeSolver do
     end
   end
 
-  defp bfs(maze, size, start, end_pos) do
+  # Returns bfs paths, including starting position
+  def shortest_path(maze, size, start, end_pos) do
     # start position and path taken
     queue = [{start, [start]}]
     visited = MapSet.new([start])
