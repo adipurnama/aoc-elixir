@@ -28,7 +28,7 @@ defmodule AdventOfCode.PathGrid do
     {graph, units, _row} =
       input
       |> String.split("\n", trim: true)
-      |> Enum.reduce({Graph.new(vertex_identifier: & &1), [], 1}, &parse_row/2)
+      |> Enum.reduce({Graph.new(vertex_identifier: & &1), [], 0}, &parse_row/2)
 
     %__MODULE__{graph: graph, units: units}
   end
@@ -37,8 +37,7 @@ defmodule AdventOfCode.PathGrid do
     {graph, units, _col_num} =
       row
       |> String.graphemes()
-      # use 1, because 0 is the wall
-      |> Enum.reduce({graph, units, 1}, fn char, {graph, units, col_num} ->
+      |> Enum.reduce({graph, units, 0}, fn char, {graph, units, col_num} ->
         units = parse_unit(char, units, {col_num, row_num})
         graph = parse_coord(char, graph, {col_num, row_num})
         {graph, units, col_num + 1}
