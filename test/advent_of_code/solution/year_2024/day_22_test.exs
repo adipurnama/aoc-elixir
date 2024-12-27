@@ -6,15 +6,19 @@ defmodule AdventOfCode.Solution.Year2024.Day22Test do
   setup do
     [
       input: """
+      1
+      10
+      100
+      2024
       """
     ]
   end
 
-  @tag :skip
+  # @tag :skip
   test "part1", %{input: input} do
     result = part1(input)
 
-    assert result
+    assert result == 37_327_623
   end
 
   @tag :skip
