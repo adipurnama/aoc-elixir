@@ -15,7 +15,7 @@ defmodule AdventOfCode.Solution.Year2024.Day21Test do
     ]
   end
 
-  # @tag :skip
+  @tag :skip
   test "part1", %{input: input} do
     result = part1(input)
 
