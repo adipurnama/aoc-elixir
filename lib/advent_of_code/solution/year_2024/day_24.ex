@@ -16,16 +16,13 @@ defmodule AdventOfCode.Solution.Year2024.Day24 do
   end
 
   defp wire_value(inputs, gates, wire) do
-    with nil <- Process.get(wire) do
-      case Map.get(inputs, wire) do
-        nil ->
-          {gate_fn, [input1, input2]} = Map.get(gates, wire)
-          gate_fn.(wire_value(inputs, gates, input1), wire_value(inputs, gates, input2))
+    case Map.get(inputs, wire) do
+      nil ->
+        {gate_fn, [input1, input2]} = Map.get(gates, wire)
+        gate_fn.(wire_value(inputs, gates, input1), wire_value(inputs, gates, input2))
 
-        val ->
-          val
-      end
-      |> tap(&Process.put(wire, &1))
+      val ->
+        val
     end
   end
 
