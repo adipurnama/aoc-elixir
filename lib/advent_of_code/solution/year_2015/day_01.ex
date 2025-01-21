@@ -28,6 +28,7 @@ defmodule AdventOfCode.Solution.Year2015.Day01 do
     case ch do
       "(" -> pos + 1
       ")" -> pos - 1
+      _ -> pos
     end
   end
 end
